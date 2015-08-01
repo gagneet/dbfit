@@ -1,9 +1,3 @@
-env:
- global:
-   - "ARTIFACTS_AWS_REGION=us-east-1"
-   - "ARTIFACTS_S3_BUCKET=dbfit"
-   - secure: "NLAj1hPcTlzBO6hEbZ3X6AOfXUVeFl0oSytrd02m+UaXzbNA9PZ6ZjYBwCGA\nvpNdVd5YVNMaUWBX5IN336mscvJswg+9lyt3y8cgBzOUWNE/UXDRXYoL8xwx\nxXnMnBatW2+0M4QtuXyLZpWyPxKa+1AYuCVJXHaANrkjufuXm04="
-   - secure: "li8rtIJ0NxvXPn2o1TltT+CaiMyfN0neFoBBA7CXCRWOt0Gjs6ytzP89Hclu\nbdPuZsCXXKckW3UIIzqR6YDU0NhLZxkZuOz0u3+dD1856jqa2umXJi3MnQ6j\nlulUkNwfmE+ul0Hly0Hia4nNivHQ3f4I7BNSQlNM0GVYy+ZL4Oo="
 language: java
 before_install:
   - "./gradlew -version"
@@ -14,7 +8,15 @@ jdk:
   - oraclejdk8
 after_success:
   - "./gradlew bundle"
-# the next line is a workaround for https://github.com/travis-ci/travis-artifacts/issues/23
-  - "gem install --version 0.8.9 faraday"
-  - "gem install travis-artifacts"
-  - "travis-artifacts upload --path zips --target-path artifacts/$TRAVIS_BUILD_ID/$TRAVIS_JOB_ID"
+addons:
+  artifacts:
+    debug: true
+    key:
+      secure: "NLAj1hPcTlzBO6hEbZ3X6AOfXUVeFl0oSytrd02m+UaXzbNA9PZ6ZjYBwCGA\nvpNdVd5YVNMaUWBX5IN336mscvJswg+9lyt3y8cgBzOUWNE/UXDRXYoL8xwx\nxXnMnBatW2+0M4QtuXyLZpWyPxKa+1AYuCVJXHaANrkjufuXm04="
+    secret:
+      secure: "li8rtIJ0NxvXPn2o1TltT+CaiMyfN0neFoBBA7CXCRWOt0Gjs6ytzP89Hclu\nbdPuZsCXXKckW3UIIzqR6YDU0NhLZxkZuOz0u3+dD1856jqa2umXJi3MnQ6j\nlulUkNwfmE+ul0Hly0Hia4nNivHQ3f4I7BNSQlNM0GVYy+ZL4Oo="
+    bucket: dbfit
+    paths:
+      - zips/
+    target_paths: "artifacts/$TRAVIS_REPO_SLUG/$TRAVIS_BUILD_NUMBER/$TRAVIS_JOB_NUMBER:artifacts/$TRAVIS_REPO_SLUG/$TRAVIS_COMMIT"
+    s3_region: "us-east-1"
